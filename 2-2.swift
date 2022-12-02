@@ -12,22 +12,6 @@ enum Outcome: Int {
     case Win = 6
 }
 
-func play(_ ours: Shape, against theirs: Shape) -> Outcome {
-
-    switch (ours, theirs) {
-        case let (x, y) where x == y: 
-            return .Draw
-        case (.Rock, .Paper):
-            return .Loss
-        case (.Paper, .Scissors):
-            return .Loss
-        case (.Scissors, .Rock):
-            return .Loss
-        default:
-            return .Win
-    }
-}
-
 var score: Int = 0
 while let line = readLine() {
     let shapes: [String: Shape] = [
