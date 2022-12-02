@@ -12,8 +12,6 @@ enum Outcome: Int {
     case Win = 6
 }
 
-
-
 func play(_ ours: Shape, against theirs: Shape) -> Outcome {
 
     switch (ours, theirs) {
