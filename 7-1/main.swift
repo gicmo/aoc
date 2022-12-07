@@ -208,3 +208,25 @@ print(smallDirs)
 
 let totalSize = smallDirs.reduce(0, +)
 print("sum of dirs with size at most \(limit): \(totalSize)")
+
+guard let rootSize = sizes[["/"]] else {
+    print("should really know about '/'")
+    exit(1)
+}
+
+let totalFs: UInt = 70000000
+let spaceForUpdate: UInt = 30000000
+
+let freeSpace = totalFs - rootSize
+let needToFree = spaceForUpdate - freeSpace
+
+print("root size is \(rootSize), free space is \(freeSpace)")
+print("need an additional: \(needToFree)")
+
+let sizeDirs = sizes.filter { path, size in size >= needToFree }.map { path, size in (path, size) }.sorted { (a, b) in a.1 < b.1 }
+print(sizeDirs)
+guard let toDelete = sizeDirs.first else {
+    print("could not find a directory to delete. meh.")
+    exit(2)
+}
+print("dir to delete is \(toDelete.0.joined(separator: "/")) with size \(toDelete.1)")
