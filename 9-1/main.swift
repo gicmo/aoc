@@ -173,6 +173,8 @@ assert(parseMove("U 2") == Move.Up(2))
 var head = Knot()
 var tail = Knot()
 
+var snake = [head, tail]
+
 func execMove(_ m: Move) {
     let dir: Position
     let amount: Int
@@ -193,12 +195,30 @@ func execMove(_ m: Move) {
         amount = x
         dir = Position.Right
     }
-   
+  
     for _ in 0..<amount {
         head.move(by: dir)
-        tail.catchUp(to: head)
+        
+        for i in 1..<snake.count {
+            snake[i].catchUp(to: snake[i-1])
+        }
+        
         print("  \(head), \(tail)")
     }
+}
+
+var knots = 2
+if CommandLine.arguments.count > 1 {
+    guard let n = UInt8(CommandLine.arguments[1]) else {
+        print("KNOTS must be between 0 and 254")
+        exit(1)
+    }
+    
+    knots = Int(n)
+}
+
+for _ in 0..<(knots-2) {
+    snake.insert(Knot(), at: 1)
 }
 
 while let line = readLine() {
