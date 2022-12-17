@@ -22,5 +22,10 @@ let package = Package(
         .executableTarget(name: "day.9-1", path: "9-1"),
         .executableTarget(name: "day.10-1", path: "10-1"),
         .executableTarget(name: "day.10-2", path: "10-2"),
+        .executableTarget(
+            name: "day.11-1",
+            path: "11-1",
+            swiftSettings: [.unsafeFlags(["-enable-bare-slash-regex"])]
+        ),
     ]
 )
