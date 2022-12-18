@@ -31,9 +31,10 @@ struct Test {
 class Monkey {
     let name: String
     let op: Op
-    var items: [Int]
+    let initialItems: [Int]
     let test: Test
     
+    var items: [Int]
     var count: Int = 0
     
     init(name: String, op: Op, items: [Int], test: Test) {
@@ -41,14 +42,22 @@ class Monkey {
         self.op = op
         self.items = items
         self.test = test
+        
+        self.initialItems = self.items
+    }
+   
+    func reset() {
+        self.items = initialItems
+        self.count = 0
     }
     
-    func turn(monkeys: [String: Monkey]) {
+    func turn(monkeys: [String: Monkey], reduceStress: (Int) -> Int) {
         items.reverse()
         
         while let item = items.popLast() {
             var num = op.apply(to: item)
-            num /= 3
+           
+            num = reduceStress(num)
             
             let target: Monkey
             if num % test.condition == 0 {
@@ -56,7 +65,8 @@ class Monkey {
             } else {
                 target = monkeys[test.action.onFalse]!
             }
-        
+           
+            
             target.receiveThrow(item: num)
 
             count += 1
@@ -208,27 +218,45 @@ repeat {
 
 print(monkeys)
 
-for round in 0..<20 {
-    print("Round \(round)")
+func play(rounds: Int, reduceStress: (Int) -> Int) -> Int64 {
+    for round in 0..<rounds {
+        print("Round \(round)")
+        for i in 0..<monkeys.count {
+            let m = monkeys["\(i)"]!
+            m.turn(monkeys: monkeys, reduceStress: reduceStress)
+        }
+        for i in 0..<monkeys.count {
+            let m = monkeys["\(i)"]!
+            print("  Monkey \(m.name): \(m.items)")
+        }
+    }
+
     for i in 0..<monkeys.count {
         let m = monkeys["\(i)"]!
-        m.turn(monkeys: monkeys)
+        print("  Monkey \(m.name) inspected items \(m.count)")
     }
-    for i in 0..<monkeys.count {
-        let m = monkeys["\(i)"]!
-        print("  Monkey \(m.name): \(m.items)")
-    }
+    
+    let counted = monkeys.map { (_, m) in
+        m.count
+    }.sorted(by: >)
+    
+   return Int64(counted[0]) * Int64(counted[1])
 }
 
+let s1 = play(rounds: 20, reduceStress: {$0 / 3})
+
+var lcm = 1
 for i in 0..<monkeys.count {
     let m = monkeys["\(i)"]!
-    print("  Monkey \(m.name) inspected items \(m.count)")
+    lcm *= m.test.condition
+    
+    // also reset the monkey
+    m.reset()
 }
+print("Common divisor: \(lcm)")
 
-let counted = monkeys.map { (_, m) in
-    m.count
-}.sorted(by: >)
+let s2 = play(rounds: 10_000) { stress in stress % lcm }
 
-print(counted)
+print("Solution 1: \(s1)")
+print("Solution 2: \(s2)")
 
-print(Int64(counted[0]) * Int64(counted[1]))
