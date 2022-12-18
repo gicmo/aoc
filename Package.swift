@@ -22,7 +22,9 @@ let package = Package(
         .executableTarget(name: "day.8-1", dependencies: [
             .target(name: "Common"),
         ], path: "8-1"),
-        .executableTarget(name: "day.8-2", path: "8-2"),
+        .executableTarget(name: "day.8-2", dependencies: [
+            .target(name: "Common"),
+        ], path: "8-2"),
         .executableTarget(name: "day.9-1", path: "9-1"),
         .executableTarget(name: "day.10-1", path: "10-1"),
         .executableTarget(name: "day.10-2", path: "10-2"),
@@ -31,5 +33,6 @@ let package = Package(
             path: "11-1",
             swiftSettings: [.unsafeFlags(["-enable-bare-slash-regex"])]
         ),
+        .executableTarget(name: "day.12-1", dependencies: ["Common"], path: "12-1"),
     ]
 )
