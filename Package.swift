@@ -7,6 +7,8 @@ let package = Package(
         .macOS(.v13)
     ],
     targets: [
+        .target(name: "Common", path: "Common"),
+
         .executableTarget(name: "day.1", path: "1-1"), 
         .executableTarget(name: "day.2-1", path: "2-1"),
         .executableTarget(name: "day.2-2", path: "2-2"),
@@ -17,7 +19,9 @@ let package = Package(
         .executableTarget(name: "day.5-2", path: "5-2"),
         .executableTarget(name: "day.6-1", path: "6-1"),
         .executableTarget(name: "day.7-1", path: "7-1"),
-        .executableTarget(name: "day.8-1", path: "8-1"),
+        .executableTarget(name: "day.8-1", dependencies: [
+            .target(name: "Common"),
+        ], path: "8-1"),
         .executableTarget(name: "day.8-2", path: "8-2"),
         .executableTarget(name: "day.9-1", path: "9-1"),
         .executableTarget(name: "day.10-1", path: "10-1"),
