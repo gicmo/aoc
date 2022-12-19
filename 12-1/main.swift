@@ -199,3 +199,23 @@ print(pred)
 let path = graph.resolvePath(pred: predData, end: end)
 print("start: \(start), end: \(end)")
 print("path: \(path), len: \(path.count)")
+
+func filterNeighboursDown<G: Graph>(_ graph: G, _ node: G.Index, _ neighbour: G.Index) -> Bool where G.Element == Int {
+    return
+        graph[neighbour] >= graph[node] ||
+        graph[neighbour] == graph[node] - 1
+}
+
+let (predData2, _, goal) = graph.bfs(start: end, until: { graph[$0] == charValue("a")}, filter: filterNeighboursDown)
+
+guard let goal = goal else {
+    preconditionFailure("Could not find goal node")
+}
+
+let path2 = graph.resolvePath(pred: predData2, end: goal)
+print("Solution 2")
+print(Matrix(data: predData2, rows: graph.nRows, cols: graph.nCols))
+print("path2: \(path2), len2: \(path2.count)")
+print("goal: \(goal): \(graph[goal])")
+
+print(graph.neighbours(at: end).filter{x in filterNeighboursDown(graph, end, x)})
