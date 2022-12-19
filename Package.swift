@@ -6,6 +6,12 @@ let package = Package(
     platforms: [
         .macOS(.v13)
     ],
+    dependencies: [
+        .package(
+            url: "https://github.com/apple/swift-collections.git",
+            .upToNextMinor(from: "1.0.0")
+        )
+    ],
     targets: [
         .target(name: "Common", path: "Common"),
 
@@ -33,6 +39,9 @@ let package = Package(
             path: "11-1",
             swiftSettings: [.unsafeFlags(["-enable-bare-slash-regex"])]
         ),
-        .executableTarget(name: "day.12-1", dependencies: ["Common"], path: "12-1"),
+        .executableTarget(name: "day.12-1", dependencies: [
+            "Common",
+            .product(name: "Collections", package: "swift-collections"),
+        ], path: "12-1"),
     ]
 )
