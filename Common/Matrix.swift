@@ -6,6 +6,8 @@ public struct Matrix<Element> {
     public let nRows: UInt8
     public let nCols: UInt8
     
+    public typealias Index = Int
+    
     public init(data: [Element], rows: UInt8, cols: UInt8) {
         precondition(data.count == Int(rows) * Int(cols), "\(data.count) != \(rows) * \(cols)")
         self.data = data
@@ -29,7 +31,7 @@ public struct Matrix<Element> {
         }
     }
     
-    private func getIndex(row: UInt8, col: UInt8) -> Int {
+    internal func getIndex(row: UInt8, col: UInt8) -> Index {
        return Int(row) * Int(nCols) + Int(col)
     }
    
@@ -45,6 +47,32 @@ public struct Matrix<Element> {
             self.data[idx] = newValue
         }
     }
+    
+    public subscript(_ index: Index) -> Element {
+        
+        get {
+            precondition(index < self.data.count)
+            return self.data[index]
+        }
+        
+        set {
+            precondition(index < self.data.count)
+            self.data[index] = newValue
+        }
+    }
+    
+}
+
+extension Matrix where Element: Equatable {
+    public func firstIndex(of element: Element) -> Index? {
+        for (idx, val) in self.data.enumerated() {
+            if val == element {
+                return idx
+            }
+        }
+        
+        return nil
+    }
 }
 
 extension Matrix: CustomStringConvertible {
@@ -54,7 +82,13 @@ extension Matrix: CustomStringConvertible {
 
             for r in 0..<self.nRows {
                 for c in 0..<self.nCols {
-                    str += "\(self[r, c]) "
+                    let s = "\(self[r, c])"
+                    
+                    s.withCString { cs in
+                        str += String(format: "%3s ", cs)
+                    }
+                    
+                    //str += String(format: "%3@ ", s)
                 }
                 str += "\n"
             }
