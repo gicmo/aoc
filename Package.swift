@@ -43,5 +43,6 @@ let package = Package(
             "Common",
             .product(name: "Collections", package: "swift-collections"),
         ], path: "12-1"),
+        .executableTarget(name: "day.13-1", path: "13-1"),
     ]
 )
